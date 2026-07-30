@@ -44,7 +44,7 @@ namespace PhysicsMaster.Core
                 {
                     if (controller != this)
                     {
-                        Destroy(controller.gameObject);
+                        SafeDestroy(controller.gameObject);
                     }
                 }
             }
@@ -79,7 +79,7 @@ namespace PhysicsMaster.Core
                 {
                     for (int i = 1; i < systems.Length; i++)
                     {
-                        Destroy(systems[i].gameObject);
+                        SafeDestroy(systems[i].gameObject);
                     }
                 }
             }
@@ -178,18 +178,18 @@ namespace PhysicsMaster.Core
 
             if (drawing != null)
             {
-                Destroy(drawing);
+                SafeDestroy(drawing);
             }
 
             if (gameplayWorldRoot != null)
             {
-                Destroy(gameplayWorldRoot);
+                SafeDestroy(gameplayWorldRoot);
             }
             gameplayWorldRoot = null;
 
             if (menuWorldRoot != null)
             {
-                Destroy(menuWorldRoot);
+                SafeDestroy(menuWorldRoot);
             }
             menuWorldRoot = null;
 
@@ -556,7 +556,7 @@ namespace PhysicsMaster.Core
             // Ball Eye (visual details)
             GameObject face = CreateCircle("BallEye", ball.transform.position + new Vector3(0.12f, 0.08f, -0.1f), 0.055f, Theme.Navy, false);
             CircleCollider2D faceCollider = face.GetComponent<CircleCollider2D>();
-            if (faceCollider != null) Destroy(faceCollider);
+            if (faceCollider != null) SafeDestroy(faceCollider);
             face.transform.SetParent(ball.transform);
             face.transform.localPosition = new Vector3(0.12f, 0.08f, -0.1f);
 
@@ -760,6 +760,19 @@ namespace PhysicsMaster.Core
             return material;
         }
 
+        private static void SafeDestroy(UnityEngine.Object obj)
+        {
+            if (obj == null) return;
+            if (Application.isPlaying)
+            {
+                Destroy(obj);
+            }
+            else
+            {
+                DestroyImmediate(obj);
+            }
+        }
+
         private void BuildHud()
         {
             Transform uiRoot = UiFactory.GetSafeAreaContainer(canvas.transform);
@@ -919,7 +932,7 @@ namespace PhysicsMaster.Core
                     {
                         Time.timeScale = 1f;
                     }
-                    Destroy(panel);
+                    SafeDestroy(panel);
                     close?.Invoke();
                 });
 

@@ -80,10 +80,18 @@ namespace PhysicsMaster.Gameplay {
         void End(Vector2 p) {
             if (activeLine == null) return;
             if (Tool == DrawingTool.Line) SetPreview(new[] { start, p });
-            if (points.Count < 2 || activeInk > .01f && usedInk + activeInk > MaxInk + .01f) { Destroy(activeLine.gameObject); activeLine = null; return; }
+            if (points.Count < 2 || activeInk > .01f && usedInk + activeInk > MaxInk + .01f) {
+                SafeDestroy(activeLine.gameObject);
+                activeLine = null;
+                return;
+            }
 
             var clean = Simplify(points, .07f);
-            if (clean.Count < 2) { Destroy(activeLine.gameObject); activeLine = null; return; }
+            if (clean.Count < 2) {
+                SafeDestroy(activeLine.gameObject);
+                activeLine = null;
+                return;
+            }
 
             activeLine.gameObject.name = "PlayerStroke";
             var edge = activeLine.gameObject.AddComponent<EdgeCollider2D>();
@@ -146,13 +154,22 @@ namespace PhysicsMaster.Gameplay {
 
         static Vector2[] BoxPoints(Vector2 a, Vector2 b) => new[] { a, new Vector2(b.x, a.y), b, new Vector2(a.x, b.y), a };
 
+        private void SafeDestroy(UnityEngine.Object obj) {
+            if (obj == null) return;
+            if (Application.isPlaying) {
+                Destroy(obj);
+            } else {
+                DestroyImmediate(obj);
+            }
+        }
+
         public void Undo() {
             if (SimulationRunning || strokes.Count == 0) return;
             var g = strokes[^1];
             var line = g.GetComponent<LineRenderer>();
             usedInk = Mathf.Max(0, usedInk + -.01f - LengthFromLine(line));
             strokes.RemoveAt(strokes.Count - 1);
-            Destroy(g);
+            SafeDestroy(g);
         }
 
         float LengthFromLine(LineRenderer l) {
@@ -163,7 +180,7 @@ namespace PhysicsMaster.Gameplay {
 
         public void Clear() {
             if (SimulationRunning) return;
-            foreach (var g in strokes) if (g) Destroy(g);
+            foreach (var g in strokes) if (g) SafeDestroy(g);
             strokes.Clear();
             usedInk = 0;
         }

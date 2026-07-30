@@ -116,11 +116,24 @@ namespace PhysicsMaster.UI {
             return b;
         }
 
+        public static void SafeDestroy(UnityEngine.Object obj)
+        {
+            if (obj == null) return;
+            if (Application.isPlaying)
+            {
+                Object.Destroy(obj);
+            }
+            else
+            {
+                Object.DestroyImmediate(obj);
+            }
+        }
+
         public static void Clear(Transform root)
         {
             for (int i = root.childCount - 1; i >= 0; i--)
             {
-                Object.Destroy(root.GetChild(i).gameObject);
+                SafeDestroy(root.GetChild(i).gameObject);
             }
         }
     }
