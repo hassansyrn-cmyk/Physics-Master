@@ -24,6 +24,9 @@ namespace PhysicsMaster.UI {
 
         public static Canvas Canvas()
         {
+            var existing = Object.FindFirstObjectByType<Canvas>();
+            if (existing != null) return existing;
+
             var g = new GameObject("Canvas");
             var c = g.AddComponent<Canvas>();
             c.renderMode = RenderMode.ScreenSpaceOverlay;
@@ -116,11 +119,24 @@ namespace PhysicsMaster.UI {
             return b;
         }
 
+        public static void SafeDestroy(UnityEngine.Object target, float delay = 0f)
+        {
+            if (target == null) return;
+            if (Application.isPlaying)
+            {
+                Object.Destroy(target, delay);
+            }
+            else
+            {
+                Object.DestroyImmediate(target);
+            }
+        }
+
         public static void Clear(Transform root)
         {
             for (int i = root.childCount - 1; i >= 0; i--)
             {
-                Object.Destroy(root.GetChild(i).gameObject);
+                SafeDestroy(root.GetChild(i).gameObject);
             }
         }
     }

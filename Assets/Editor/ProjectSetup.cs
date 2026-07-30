@@ -19,6 +19,14 @@ public static class ProjectSetup
 
     public static void Ensure()
     {
+        // If we are running tests, do not mutate the active scene or create things in it!
+        if (System.AppDomain.CurrentDomain.FriendlyName.Contains("testrunner") ||
+            System.Environment.StackTrace.Contains("TestRunner") ||
+            System.Environment.CommandLine.Contains("-runTests"))
+        {
+            return;
+        }
+
         EnsureMainScene();
         ConfigureBuildScenes();
         ConfigurePlayerSettings();

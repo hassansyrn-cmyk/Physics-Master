@@ -1,4 +1,5 @@
 using UnityEngine;
+using PhysicsMaster.UI;
 
 namespace PhysicsMaster.Gameplay
 {
@@ -46,10 +47,10 @@ namespace PhysicsMaster.Gameplay
                     * Random.Range(1.5f, 4f);
                 body.gravityScale = 0.5f;
 
-                Object.Destroy(particle, 1.2f);
+                UiFactory.SafeDestroy(particle, 1.2f);
             }
 
-            Object.Destroy(root, 1.3f);
+            UiFactory.SafeDestroy(root, 1.3f);
         }
     }
 }

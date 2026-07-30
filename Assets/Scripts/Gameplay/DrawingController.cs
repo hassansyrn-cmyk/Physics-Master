@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using PhysicsMaster.UI;
 
 namespace PhysicsMaster.Gameplay {
     public sealed class DrawingController : MonoBehaviour {
@@ -80,10 +81,10 @@ namespace PhysicsMaster.Gameplay {
         void End(Vector2 p) {
             if (activeLine == null) return;
             if (Tool == DrawingTool.Line) SetPreview(new[] { start, p });
-            if (points.Count < 2 || activeInk > .01f && usedInk + activeInk > MaxInk + .01f) { Destroy(activeLine.gameObject); activeLine = null; return; }
+            if (points.Count < 2 || activeInk > .01f && usedInk + activeInk > MaxInk + .01f) { UiFactory.SafeDestroy(activeLine.gameObject); activeLine = null; return; }
 
             var clean = Simplify(points, .07f);
-            if (clean.Count < 2) { Destroy(activeLine.gameObject); activeLine = null; return; }
+            if (clean.Count < 2) { UiFactory.SafeDestroy(activeLine.gameObject); activeLine = null; return; }
 
             activeLine.gameObject.name = "PlayerStroke";
             var edge = activeLine.gameObject.AddComponent<EdgeCollider2D>();
@@ -152,7 +153,7 @@ namespace PhysicsMaster.Gameplay {
             var line = g.GetComponent<LineRenderer>();
             usedInk = Mathf.Max(0, usedInk + -.01f - LengthFromLine(line));
             strokes.RemoveAt(strokes.Count - 1);
-            Destroy(g);
+            UiFactory.SafeDestroy(g);
         }
 
         float LengthFromLine(LineRenderer l) {
@@ -163,7 +164,7 @@ namespace PhysicsMaster.Gameplay {
 
         public void Clear() {
             if (SimulationRunning) return;
-            foreach (var g in strokes) if (g) Destroy(g);
+            foreach (var g in strokes) if (g) UiFactory.SafeDestroy(g);
             strokes.Clear();
             usedInk = 0;
         }

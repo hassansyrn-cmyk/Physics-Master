@@ -14,17 +14,53 @@ public sealed class PhysicsMasterTests {
     [SetUp]
     public void Setup()
     {
-        // Setup a dummy Screen size / PlayableWorldRect if not already initialized
-        // This ensures the MapCoordinates work correctly in edit mode tests.
-        System.Reflection.MethodInfo method = typeof(AppController).GetMethod("RecalculatePlayableBounds",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        // Ensure a clean empty scene
+        CleanupActiveScene();
 
-        if (method != null)
+        // Configure deterministic bounds for testing
+        AppController.TestScreenWidth = 1080f;
+        AppController.TestScreenHeight = 1920f;
+        AppController.TestSafeArea = new Rect(0, 0, 1080f, 1920f);
+
+        // Create a camera with MainCamera tag so Camera.main is never null
+        GameObject camGo = new GameObject("Main Camera");
+        camGo.tag = "MainCamera";
+        Camera cam = camGo.AddComponent<Camera>();
+        cam.orthographic = true;
+        cam.orthographicSize = 8.0f;
+
+        // Initialize bounds and app
+        GameObject appObj = new GameObject("AppController");
+        AppController app = appObj.AddComponent<AppController>();
+        app.EnsureInitialized();
+        app.RecalculatePlayableBounds();
+
+        // Cleanup temporary controller used for Setup
+        Object.DestroyImmediate(appObj);
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        CleanupActiveScene();
+        Time.timeScale = 1f;
+
+        // Reset test fields
+        AppController.TestScreenWidth = null;
+        AppController.TestScreenHeight = null;
+        AppController.TestSafeArea = null;
+    }
+
+    private void CleanupActiveScene()
+    {
+        // Find and destroy all GameObjects in the active scene to ensure a clean slate
+        var rootObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+        foreach (var obj in rootObjects)
         {
-            GameObject go = new GameObject("DummyAppController");
-            AppController app = go.AddComponent<AppController>();
-            method.Invoke(app, null);
-            Object.DestroyImmediate(go);
+            if (obj != null)
+            {
+                Object.DestroyImmediate(obj);
+            }
         }
     }
 
@@ -33,7 +69,7 @@ public sealed class PhysicsMasterTests {
     {
         for (int i = 1; i <= 50; i++)
         {
-            TextAsset asset = Resources.Load<TextAsset>($"Levels/level_{i:03d}");
+            TextAsset asset = Resources.Load<TextAsset>($"Levels/level_{i:000}");
             Assert.IsNotNull(asset, $"Level {i} asset was not found.");
             LevelData data = JsonUtility.FromJson<LevelData>(asset.text);
             Assert.IsNotNull(data, $"Level {i} JSON failed to parse.");
@@ -51,7 +87,7 @@ public sealed class PhysicsMasterTests {
 
         for (int i = 1; i <= 50; i++)
         {
-            TextAsset asset = Resources.Load<TextAsset>($"Levels/level_{i:03d}");
+            TextAsset asset = Resources.Load<TextAsset>($"Levels/level_{i:000}");
             LevelData data = JsonUtility.FromJson<LevelData>(asset.text);
 
             Vector2 ballPos = AppController.MapCoordinates(data.ballX, data.ballY);

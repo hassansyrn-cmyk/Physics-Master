@@ -36,26 +36,60 @@ namespace PhysicsMaster.Core
 
         private void Awake()
         {
+            EnsureInitialized();
+            ShowMainMenu();
+        }
+
+        private bool initialized = false;
+
+        public static float? TestScreenWidth = null;
+        public static float? TestScreenHeight = null;
+        public static Rect? TestSafeArea = null;
+
+        public void EnsureInitialized()
+        {
+            if (initialized) return;
+            initialized = true;
+
             // Enforce single instance / prevent duplicate controllers
             AppController[] existingControllers = FindObjectsByType<AppController>(FindObjectsSortMode.None);
             if (existingControllers.Length > 1)
             {
+                bool keptOne = false;
                 foreach (var controller in existingControllers)
                 {
-                    if (controller != this)
+                    if (controller == this)
                     {
-                        Destroy(controller.gameObject);
+                        keptOne = true;
+                    }
+                    else
+                    {
+                        UiFactory.SafeDestroy(controller.gameObject);
                     }
                 }
             }
 
-            Application.targetFrameRate = 60;
-            QualitySettings.vSyncCount = 0;
-            Screen.sleepTimeout = SleepTimeout.NeverSleep;
+            if (Application.isPlaying)
+            {
+                Application.targetFrameRate = 60;
+                QualitySettings.vSyncCount = 0;
+                Screen.sleepTimeout = SleepTimeout.NeverSleep;
+            }
 
             LocalizationService.Initialize();
 
             cam = Camera.main;
+            if (cam == null)
+            {
+                cam = FindFirstObjectByType<Camera>();
+            }
+            if (cam == null)
+            {
+                GameObject camGo = new GameObject("Main Camera");
+                camGo.tag = "MainCamera";
+                cam = camGo.AddComponent<Camera>();
+            }
+
             if (cam != null)
             {
                 cam.orthographic = true;
@@ -66,7 +100,8 @@ namespace PhysicsMaster.Core
             }
 
             // Ensure single EventSystem
-            if (EventSystem.current == null)
+            EventSystem existingEventSystem = FindFirstObjectByType<EventSystem>();
+            if (existingEventSystem == null)
             {
                 GameObject eventSystem = new GameObject("EventSystem");
                 eventSystem.AddComponent<EventSystem>();
@@ -79,20 +114,33 @@ namespace PhysicsMaster.Core
                 {
                     for (int i = 1; i < systems.Length; i++)
                     {
-                        Destroy(systems[i].gameObject);
+                        UiFactory.SafeDestroy(systems[i].gameObject);
                     }
                 }
             }
 
-            canvas = UiFactory.Canvas();
+            // Canvas Setup
+            if (canvas == null)
+            {
+                canvas = FindFirstObjectByType<Canvas>();
+            }
+            if (canvas == null)
+            {
+                canvas = UiFactory.Canvas();
+            }
+
+            // Clean up drawing controllers
+            DrawingController[] existingDrawings = GetComponents<DrawingController>();
+            foreach (var ext in existingDrawings)
+            {
+                UiFactory.SafeDestroy(ext);
+            }
 
             // Initial screen sizes
-            lastScreenWidth = Screen.width;
-            lastScreenHeight = Screen.height;
+            lastScreenWidth = Screen.width > 0 ? Screen.width : 1080;
+            lastScreenHeight = Screen.height > 0 ? Screen.height : 1920;
             lastSafeArea = Screen.safeArea;
             RecalculatePlayableBounds();
-
-            ShowMainMenu();
         }
 
         private void Update()
@@ -131,20 +179,37 @@ namespace PhysicsMaster.Core
             }
         }
 
-        private void RecalculatePlayableBounds()
+        public void RecalculatePlayableBounds()
         {
             if (cam == null) cam = Camera.main;
-            if (cam == null) return;
+            if (cam == null)
+            {
+                cam = FindFirstObjectByType<Camera>();
+            }
+            if (cam == null)
+            {
+                GameObject camGo = new GameObject("Main Camera");
+                camGo.tag = "MainCamera";
+                cam = camGo.AddComponent<Camera>();
+            }
 
-            cam.orthographic = true;
-            cam.orthographicSize = 8.0f;
-            cam.clearFlags = CameraClearFlags.SolidColor;
-            cam.backgroundColor = Theme.Background;
-            RenderSettings.skybox = null;
+            if (cam != null)
+            {
+                cam.orthographic = true;
+                cam.orthographicSize = 8.0f;
+                cam.clearFlags = CameraClearFlags.SolidColor;
+                cam.backgroundColor = Theme.Background;
+                RenderSettings.skybox = null;
+            }
 
-            Rect safeArea = Screen.safeArea;
-            float sw = Screen.width > 0 ? Screen.width : 1080f;
-            float sh = Screen.height > 0 ? Screen.height : 1920f;
+            float sw = TestScreenWidth ?? (Screen.width > 0 ? Screen.width : 1080f);
+            float sh = TestScreenHeight ?? (Screen.height > 0 ? Screen.height : 1920f);
+            Rect safeArea = TestSafeArea ?? Screen.safeArea;
+
+            if (safeArea.width <= 0 || safeArea.height <= 0)
+            {
+                safeArea = new Rect(0, 0, sw, sh);
+            }
 
             float safeMinX = safeArea.xMin / sw;
             float safeMaxX = safeArea.xMax / sw;
@@ -178,18 +243,18 @@ namespace PhysicsMaster.Core
 
             if (drawing != null)
             {
-                Destroy(drawing);
+                UiFactory.SafeDestroy(drawing);
             }
 
             if (gameplayWorldRoot != null)
             {
-                Destroy(gameplayWorldRoot);
+                UiFactory.SafeDestroy(gameplayWorldRoot);
             }
             gameplayWorldRoot = null;
 
             if (menuWorldRoot != null)
             {
-                Destroy(menuWorldRoot);
+                UiFactory.SafeDestroy(menuWorldRoot);
             }
             menuWorldRoot = null;
 
@@ -556,7 +621,7 @@ namespace PhysicsMaster.Core
             // Ball Eye (visual details)
             GameObject face = CreateCircle("BallEye", ball.transform.position + new Vector3(0.12f, 0.08f, -0.1f), 0.055f, Theme.Navy, false);
             CircleCollider2D faceCollider = face.GetComponent<CircleCollider2D>();
-            if (faceCollider != null) Destroy(faceCollider);
+            if (faceCollider != null) UiFactory.SafeDestroy(faceCollider);
             face.transform.SetParent(ball.transform);
             face.transform.localPosition = new Vector3(0.12f, 0.08f, -0.1f);
 
@@ -919,7 +984,7 @@ namespace PhysicsMaster.Core
                     {
                         Time.timeScale = 1f;
                     }
-                    Destroy(panel);
+                    UiFactory.SafeDestroy(panel);
                     close?.Invoke();
                 });
 
