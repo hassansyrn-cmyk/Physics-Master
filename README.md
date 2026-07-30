@@ -1,52 +1,8 @@
-# نظام الرسم الحر → جسم فيزيائي (Physics Master)
+# Physics Master compiler fix
 
-هذه الحزمة تنفّذ الجزء الأساسي المطلوب: تحويل رسمة حرة يرسمها اللاعب بإصبعه
-إلى جسم فيزيائي حقيقي (Rigidbody2D + PolygonCollider2D) يتفاعل مع بقية عناصر المرحلة.
+This patch fixes the two errors reported by Unity 6000.0.80f1:
 
-## الملفات
+1. In `Assets/Scripts/Core/AppController.cs`, replace `SleepTimeout.Never` with `SleepTimeout.NeverSleep`.
+2. Replace the existing `Assets/Scripts/Gameplay/Effects.cs` with the file included in this patch.
 
-| الملف | الدور |
-|---|---|
-| `DrawSettings.cs` | إعدادات قابلة للضبط من المحرر (السُمك، التبسيط، الكثافة...) دون لمس الكود |
-| `DrawInputController.cs` | يلتقط اللمس/الماوس فقط ويبث نقاط خام عبر أحداث |
-| `PathSimplifier.cs` | خوارزمية Douglas-Peucker لتقليل مئات النقاط الخام إلى مسار نظيف |
-| `RibbonMeshBuilder.cs` | يحوّل المسار إلى مضلّع "شريطي" مغلق له سُمك حقيقي (هذا ما يجعل الخط "جسماً" لا خطاً بلا حجم) |
-| `PlayAreaBounds.cs` | يمنع الرسم خارج منطقة اللعب |
-| `DrawnPhysicsObject.cs` | الجسم الناتج فعلياً في المشهد (فيزياء + عرض مرئي متطابق) |
-| `DrawingManager.cs` | ينسّق كل الخطوات ويطلق أحداث `OnShapeCreated` / `OnDrawRejected` |
-
-## خط الأنابيب (Pipeline)
-
-سحب الإصبع → نقاط خام → تحقق من الطول الأقصى → تبسيط (Douglas-Peucker) →
-بناء شريط بسُمك ثابت → تحقق من المساحة الدنيا → إنشاء GameObject بـ Rigidbody2D
-و PolygonCollider2D → إطلاق حدث `OnShapeCreated`.
-
-## التركيب في Unity (خطوات سريعة)
-
-1. أنشئ مجلد `Assets/Scripts/Drawing` وانسخ الملفات إليه.
-2. من قائمة Assets → Create → PhysicsMaster → Draw Settings، أنشئ أصل إعدادات وعدّل القيم حسب الحاجة.
-3. أنشئ GameObject فارغ باسم `PlayArea`، أضف له `BoxCollider2D` واضبط حجمه ليطابق منطقة اللعب، ثم أضف مكوّن `PlayAreaBounds`.
-4. أنشئ GameObject باسم `DrawingSystem`، أضف له مكوّني `DrawInputController` و`DrawingManager`، واربط:
-   - Target Camera → الكاميرا الرئيسية
-   - Play Area → الكائن الذي أنشأته في الخطوة 3
-   - Settings → أصل الإعدادات من الخطوة 2
-   - Shapes Parent (اختياري) → Transform فارغ لتنظيم الأشكال المُنشأة في الـ Hierarchy
-5. شغّل المشهد واسحب بالماوس داخل منطقة اللعب — سيظهر خط، وعند رفع الزر يتحول فوراً إلى جسم فيزيائي يسقط بالجاذبية.
-
-## حدود معروفة في هذه النسخة (مهم لمعرفتها قبل التوسع)
-
-- **الأشكال شديدة التعرّج**: الرسمة السريعة جداً بزوايا حادة متكررة قد تُنتج مضلعاً
-  متقاطعاً ذاتياً (self-intersecting)، وBox2D قد يتصرف معه بشكل غير متوقع.
-  للإنتاج النهائي يُفضّل إضافة مكتبة تبسيط/تنعيم أقوى (مثل Chaikin smoothing) قبل بناء الشريط.
-- **الأداة الواحدة فقط**: هذا يغطي أداة "الرسم الحر". أدوات مثل الدائرة/المربع/المثلث
-  أبسط بكثير (تُبنى بمعادلات هندسية جاهزة لا برسم حر) ويمكن بناؤها كأنظمة منفصلة تستخدم
-  نفس `DrawnPhysicsObject` كقاعدة.
-- **لا يوجد حد أقصى لعدد الأدوات لكل مرحلة بعد** — يُضاف بسهولة عبر الاستماع لحدث
-  `OnShapeCreated` في مدير المرحلة وتعطيل `DrawInputController` عند الوصول للحد.
-- **لا يوجد Undo/مسح شكل واحد بعد** — يمكن إضافته بسهولة لأن كل شكل هو GameObject مستقل.
-
-## الخطوة التالية المقترحة
-
-بعد اختبار هذا النظام، الأنسب هو بناء **نظام المراحل** (Level Manager + Goal
-Detection + Star Rating) لأنه يحتاج للاستماع مباشرة لحدث `OnShapeCreated` هنا لعدّ
-الأدوات المستخدمة وتحديد النجوم. أخبرني إذا تريد المتابعة به.
+The new effects implementation uses only `SpriteRenderer` and `Rigidbody2D`, so it does not require the 3D `UnityEngine.PhysicsModule` assembly.

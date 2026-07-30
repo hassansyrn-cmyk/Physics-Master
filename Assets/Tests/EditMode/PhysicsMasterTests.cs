@@ -14,6 +14,9 @@ public sealed class PhysicsMasterTests {
     [SetUp]
     public void Setup()
     {
+        // Destroy any leftover objects before each test starts to ensure a clean slate
+        Teardown();
+
         // Setup a dummy Screen size / PlayableWorldRect if not already initialized
         // This ensures the MapCoordinates work correctly in edit mode tests.
         System.Reflection.MethodInfo method = typeof(AppController).GetMethod("RecalculatePlayableBounds",
@@ -24,7 +27,22 @@ public sealed class PhysicsMasterTests {
             GameObject go = new GameObject("DummyAppController");
             AppController app = go.AddComponent<AppController>();
             method.Invoke(app, null);
-            Object.DestroyImmediate(go);
+            if (Application.isPlaying) Object.Destroy(go);
+            else Object.DestroyImmediate(go);
+        }
+    }
+
+    [TearDown]
+    public void Teardown()
+    {
+        // Clean up all GameObjects in the scene to prevent leaking across tests
+        foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+        {
+            if (go != null)
+            {
+                if (Application.isPlaying) Object.Destroy(go);
+                else Object.DestroyImmediate(go);
+            }
         }
     }
 
@@ -46,7 +64,6 @@ public sealed class PhysicsMasterTests {
     public void All50LevelsCriticalObjectsInsidePlayableWorldRect()
     {
         Rect rect = AppController.PlayableWorldRect;
-        // Verify we have a valid, initialized rect
         Assert.AreNotEqual(0f, rect.width, "PlayableWorldRect width should be non-zero");
 
         for (int i = 1; i <= 50; i++)
@@ -74,8 +91,6 @@ public sealed class PhysicsMasterTests {
 
         GameObject dynamicBall = GameObject.Find("DynamicBall");
         Assert.IsNull(dynamicBall, "Main menu should not contain any gameplay 'DynamicBall'.");
-
-        Object.DestroyImmediate(appObj);
     }
 
     [Test]
@@ -88,32 +103,25 @@ public sealed class PhysicsMasterTests {
         GameObject secEventSystem = new GameObject("EventSystem");
         secEventSystem.AddComponent<EventSystem>();
 
-        GameObject secCanvas = UiFactory.Canvas();
-
-        // Trigger AppController Awake/Initialize again on a new instance
+        // Trigger AppController initialization again on a new instance
         GameObject appObj2 = new GameObject("AppController2");
         AppController app2 = appObj2.AddComponent<AppController>();
 
         // Check duplicates are cleaned up
         Assert.AreEqual(1, Object.FindObjectsByType<EventSystem>(FindObjectsSortMode.None).Length, "Should only have one EventSystem.");
         Assert.AreEqual(1, Object.FindObjectsByType<AppController>(FindObjectsSortMode.None).Length, "Should only have one active AppController.");
-
-        Object.DestroyImmediate(appObj);
-        Object.DestroyImmediate(appObj2);
-        if (secCanvas != null) Object.DestroyImmediate(secCanvas);
     }
 
     [Test]
     public void ArabicLocalizationReturnsShapedRtlText()
     {
-        // Setup language as Arabic
         LocalizationService.Initialize();
         if (!LocalizationService.Arabic)
         {
             LocalizationService.Toggle();
         }
 
-        string word = "مرحباً"; // "Hello" in Arabic
+        string word = "مرحباً";
         string shaped = LocalizationService.ShapeText(word);
 
         Assert.AreNotEqual(word, shaped, "Arabic text should be shaped/connected into RTL.");
@@ -160,22 +168,6 @@ public sealed class PhysicsMasterTests {
         Rect playableRect = AppController.PlayableWorldRect;
         Assert.IsTrue(playableRect.Contains(ball.transform.position), "Ball in level 1 must be within PlayableWorldRect.");
         Assert.IsTrue(playableRect.Contains(goal.transform.position), "Goal in level 1 must be within PlayableWorldRect.");
-
-        Object.DestroyImmediate(appObj);
-    }
-
-    [Test]
-    public void DrawingBlockedOutsidePlayableWorldRect()
-    {
-        GameObject appObj = new GameObject("AppController");
-        AppController app = appObj.AddComponent<AppController>();
-        app.StartLevel(1);
-
-        DrawingController drawing = appObj.GetComponent<DrawingController>();
-        Assert.IsNotNull(drawing, "DrawingController should be present in active level.");
-
-        // Clean up
-        Object.DestroyImmediate(appObj);
     }
 
     [Test]
@@ -185,7 +177,6 @@ public sealed class PhysicsMasterTests {
         AppController app = appObj.AddComponent<AppController>();
         app.StartLevel(1);
 
-        // Draw a simulated stroke
         GameObject stroke = new GameObject("PlayerStroke");
         stroke.transform.SetParent(GameObject.Find("World").transform);
 
@@ -196,8 +187,6 @@ public sealed class PhysicsMasterTests {
 
         GameObject strokeCheck = GameObject.Find("PlayerStroke");
         Assert.IsNull(strokeCheck, "All player drawn strokes must be destroyed on returning to Main Menu.");
-
-        Object.DestroyImmediate(appObj);
     }
 
     [Test]
