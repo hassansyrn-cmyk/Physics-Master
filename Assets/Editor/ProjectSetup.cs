@@ -2,6 +2,7 @@
 
 using System.IO;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using PhysicsMaster.Core;
@@ -39,27 +40,39 @@ public static class ProjectSetup
             NewSceneSetup.DefaultGameObjects,
             NewSceneMode.Single);
 
-        var appControllerObject = new GameObject("AppController");
+        var appControllerObject =
+            new GameObject("AppController");
+
         appControllerObject.AddComponent<AppController>();
 
-        EditorSceneManager.SaveScene(scene, ScenePath);
+        EditorSceneManager.SaveScene(
+            scene,
+            ScenePath);
     }
 
     private static void ConfigureBuildScenes()
     {
         EditorBuildSettings.scenes = new[]
         {
-            new EditorBuildSettingsScene(ScenePath, true)
+            new EditorBuildSettingsScene(
+                ScenePath,
+                true)
         };
     }
 
     private static void ConfigurePlayerSettings()
     {
-        NamedBuildTarget androidTarget = NamedBuildTarget.Android;
+        NamedBuildTarget androidTarget =
+            NamedBuildTarget.Android;
 
-        PlayerSettings.companyName = "Afaq Games";
-        PlayerSettings.productName = "Physics Master: Draw & Solve";
-        PlayerSettings.bundleVersion = "0.2.0";
+        PlayerSettings.companyName =
+            "Afaq Games";
+
+        PlayerSettings.productName =
+            "Physics Master: Draw & Solve";
+
+        PlayerSettings.bundleVersion =
+            "0.2.0";
 
         PlayerSettings.SetApplicationIdentifier(
             androidTarget,
