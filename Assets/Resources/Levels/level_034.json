@@ -1,0 +1,20 @@
+{
+  "id": 34,
+  "chapter": 4,
+  "titleEn": "Experiment 34",
+  "titleAr": "التجربة 34",
+  "objective": "PressButton",
+  "hazard": "Blade",
+  "timeLimit": 31.0,
+  "inkLimit": 13.0,
+  "ballX": -5.5,
+  "ballY": 2.3,
+  "goalX": 4.55,
+  "goalY": -2.75,
+  "gravity": 9.81,
+  "friction": 0.55,
+  "bounciness": 0.2,
+  "parStrokes": 3,
+  "movingObstacle": true,
+  "reverseGravity": false
+}

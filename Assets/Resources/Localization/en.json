@@ -1,0 +1,9 @@
+{
+  "play": "Play",
+  "restart": "Restart",
+  "next": "Next",
+  "level": "Level",
+  "win": "Solved!",
+  "tools": "Ink",
+  "hint": "Hint: Draw a ramp or bridge to guide the ball."
+}

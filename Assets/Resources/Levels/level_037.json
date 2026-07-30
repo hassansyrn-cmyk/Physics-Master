@@ -1,0 +1,20 @@
+{
+  "id": 37,
+  "chapter": 4,
+  "titleEn": "Experiment 37",
+  "titleAr": "التجربة 37",
+  "objective": "PressButton",
+  "hazard": "ReverseGravity",
+  "timeLimit": 30.0,
+  "inkLimit": 12.0,
+  "ballX": -5.5,
+  "ballY": 1.9,
+  "goalX": 4.55,
+  "goalY": -3.1,
+  "gravity": 9.81,
+  "friction": 0.35,
+  "bounciness": 0.1,
+  "parStrokes": 3,
+  "movingObstacle": true,
+  "reverseGravity": true
+}

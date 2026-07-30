@@ -1,0 +1,20 @@
+{
+  "id": 44,
+  "chapter": 5,
+  "titleEn": "Experiment 44",
+  "titleAr": "التجربة 44",
+  "objective": "ProtectEgg",
+  "hazard": "Mud",
+  "timeLimit": 26.0,
+  "inkLimit": 11.0,
+  "ballX": -5.0,
+  "ballY": 1.5,
+  "goalX": 4.1,
+  "goalY": -3.45,
+  "gravity": 9.81,
+  "friction": 0.55,
+  "bounciness": 0.0,
+  "parStrokes": 2,
+  "movingObstacle": true,
+  "reverseGravity": false
+}

@@ -1,0 +1,20 @@
+{
+  "id": 22,
+  "chapter": 3,
+  "titleEn": "Experiment 22",
+  "titleAr": "التجربة 22",
+  "objective": "CollectStars",
+  "hazard": "Magnet",
+  "timeLimit": 37.0,
+  "inkLimit": 14.0,
+  "ballX": -5.5,
+  "ballY": 2.3,
+  "goalX": 4.55,
+  "goalY": -2.75,
+  "gravity": 9.81,
+  "friction": 0.35,
+  "bounciness": 0.2,
+  "parStrokes": 3,
+  "movingObstacle": true,
+  "reverseGravity": false
+}

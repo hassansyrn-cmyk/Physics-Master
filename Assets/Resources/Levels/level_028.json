@@ -1,0 +1,20 @@
+{
+  "id": 28,
+  "chapter": 3,
+  "titleEn": "Experiment 28",
+  "titleAr": "التجربة 28",
+  "objective": "CollectStars",
+  "hazard": "Lava",
+  "timeLimit": 34.0,
+  "inkLimit": 13.0,
+  "ballX": -5.5,
+  "ballY": 1.5,
+  "goalX": 4.55,
+  "goalY": -3.45,
+  "gravity": 9.81,
+  "friction": 0.45,
+  "bounciness": 0.0,
+  "parStrokes": 3,
+  "movingObstacle": true,
+  "reverseGravity": false
+}

@@ -1,0 +1,20 @@
+{
+  "id": 10,
+  "chapter": 1,
+  "titleEn": "Experiment 10",
+  "titleAr": "التجربة 10",
+  "objective": "ReachGoal",
+  "hazard": "Spikes",
+  "timeLimit": 43.0,
+  "inkLimit": 16.0,
+  "ballX": -5.5,
+  "ballY": 2.3,
+  "goalX": 4.55,
+  "goalY": -2.75,
+  "gravity": 9.81,
+  "friction": 0.15,
+  "bounciness": 0.2,
+  "parStrokes": 4,
+  "movingObstacle": true,
+  "reverseGravity": false
+}

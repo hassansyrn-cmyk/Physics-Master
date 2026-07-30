@@ -1,0 +1,20 @@
+{
+  "id": 45,
+  "chapter": 5,
+  "titleEn": "Experiment 45",
+  "titleAr": "التجربة 45",
+  "objective": "ProtectEgg",
+  "hazard": "Mud",
+  "timeLimit": 26.0,
+  "inkLimit": 11.0,
+  "ballX": -6.0,
+  "ballY": 1.9,
+  "goalX": 5.0,
+  "goalY": -3.1,
+  "gravity": 9.81,
+  "friction": 0.15,
+  "bounciness": 0.1,
+  "parStrokes": 2,
+  "movingObstacle": true,
+  "reverseGravity": false
+}

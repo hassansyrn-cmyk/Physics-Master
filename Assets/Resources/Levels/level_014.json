@@ -1,0 +1,20 @@
+{
+  "id": 14,
+  "chapter": 2,
+  "titleEn": "Experiment 14",
+  "titleAr": "التجربة 14",
+  "objective": "DropBox",
+  "hazard": "Ice",
+  "timeLimit": 41.0,
+  "inkLimit": 15.0,
+  "ballX": -5.0,
+  "ballY": 2.3,
+  "goalX": 4.1,
+  "goalY": -2.75,
+  "gravity": 9.81,
+  "friction": 0.55,
+  "bounciness": 0.2,
+  "parStrokes": 4,
+  "movingObstacle": true,
+  "reverseGravity": false
+}

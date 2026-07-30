@@ -1,0 +1,20 @@
+{
+  "id": 25,
+  "chapter": 3,
+  "titleEn": "Experiment 25",
+  "titleAr": "التجربة 25",
+  "objective": "CollectStars",
+  "hazard": "Magnet",
+  "timeLimit": 36.0,
+  "inkLimit": 14.0,
+  "ballX": -5.5,
+  "ballY": 1.9,
+  "goalX": 4.55,
+  "goalY": -3.1,
+  "gravity": 9.81,
+  "friction": 0.15,
+  "bounciness": 0.1,
+  "parStrokes": 3,
+  "movingObstacle": true,
+  "reverseGravity": false
+}

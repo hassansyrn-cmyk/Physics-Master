@@ -1,0 +1,20 @@
+{
+  "id": 9,
+  "chapter": 1,
+  "titleEn": "Experiment 9",
+  "titleAr": "التجربة 9",
+  "objective": "ReachGoal",
+  "hazard": "Spikes",
+  "timeLimit": 44.0,
+  "inkLimit": 16.0,
+  "ballX": -6.0,
+  "ballY": 1.9,
+  "goalX": 5.0,
+  "goalY": -3.1,
+  "gravity": 9.81,
+  "friction": 0.55,
+  "bounciness": 0.1,
+  "parStrokes": 4,
+  "movingObstacle": true,
+  "reverseGravity": false
+}

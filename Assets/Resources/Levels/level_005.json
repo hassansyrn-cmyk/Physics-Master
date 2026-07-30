@@ -1,0 +1,20 @@
+{
+  "id": 5,
+  "chapter": 1,
+  "titleEn": "Experiment 5",
+  "titleAr": "التجربة 5",
+  "objective": "ReachGoal",
+  "hazard": "None",
+  "timeLimit": 46.0,
+  "inkLimit": 17.0,
+  "ballX": -5.0,
+  "ballY": 1.9,
+  "goalX": 4.1,
+  "goalY": -3.1,
+  "gravity": 9.81,
+  "friction": 0.15,
+  "bounciness": 0.1,
+  "parStrokes": 4,
+  "movingObstacle": false,
+  "reverseGravity": false
+}

@@ -1,0 +1,20 @@
+{
+  "id": 50,
+  "chapter": 5,
+  "titleEn": "Experiment 50",
+  "titleAr": "التجربة 50",
+  "objective": "ProtectEgg",
+  "hazard": "Portal",
+  "timeLimit": 23.0,
+  "inkLimit": 10.0,
+  "ballX": -5.0,
+  "ballY": 2.3,
+  "goalX": 4.1,
+  "goalY": -2.75,
+  "gravity": 9.81,
+  "friction": 0.15,
+  "bounciness": 0.2,
+  "parStrokes": 2,
+  "movingObstacle": true,
+  "reverseGravity": false
+}

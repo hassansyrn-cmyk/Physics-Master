@@ -1,0 +1,20 @@
+{
+  "id": 7,
+  "chapter": 1,
+  "titleEn": "Experiment 7",
+  "titleAr": "التجربة 7",
+  "objective": "ReachGoal",
+  "hazard": "Spikes",
+  "timeLimit": 45.0,
+  "inkLimit": 16.0,
+  "ballX": -5.5,
+  "ballY": 2.7,
+  "goalX": 4.55,
+  "goalY": -2.4000000000000004,
+  "gravity": 9.81,
+  "friction": 0.35,
+  "bounciness": 0.3,
+  "parStrokes": 4,
+  "movingObstacle": true,
+  "reverseGravity": false
+}

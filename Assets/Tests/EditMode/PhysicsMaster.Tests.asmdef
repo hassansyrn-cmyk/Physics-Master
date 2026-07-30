@@ -1,0 +1,12 @@
+{
+  "name": "PhysicsMaster.Tests",
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "references": [
+    "PhysicsMaster.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": 31,
+  "chapter": 4,
+  "titleEn": "Experiment 31",
+  "titleAr": "التجربة 31",
+  "objective": "PressButton",
+  "hazard": "Blade",
+  "timeLimit": 33.0,
+  "inkLimit": 13.0,
+  "ballX": -5.5,
+  "ballY": 2.7,
+  "goalX": 4.55,
+  "goalY": -2.4000000000000004,
+  "gravity": 9.81,
+  "friction": 0.25,
+  "bounciness": 0.3,
+  "parStrokes": 3,
+  "movingObstacle": true,
+  "reverseGravity": false
+}

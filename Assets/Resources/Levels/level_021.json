@@ -1,0 +1,20 @@
+{
+  "id": 21,
+  "chapter": 3,
+  "titleEn": "Experiment 21",
+  "titleAr": "التجربة 21",
+  "objective": "CollectStars",
+  "hazard": "Magnet",
+  "timeLimit": 38.0,
+  "inkLimit": 14.0,
+  "ballX": -6.0,
+  "ballY": 1.9,
+  "goalX": 5.0,
+  "goalY": -3.1,
+  "gravity": 9.81,
+  "friction": 0.25,
+  "bounciness": 0.1,
+  "parStrokes": 3,
+  "movingObstacle": true,
+  "reverseGravity": false
+}

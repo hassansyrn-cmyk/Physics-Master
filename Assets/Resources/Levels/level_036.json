@@ -1,0 +1,20 @@
+{
+  "id": 36,
+  "chapter": 4,
+  "titleEn": "Experiment 36",
+  "titleAr": "التجربة 36",
+  "objective": "PressButton",
+  "hazard": "ReverseGravity",
+  "timeLimit": 30.0,
+  "inkLimit": 12.0,
+  "ballX": -6.0,
+  "ballY": 1.5,
+  "goalX": 5.0,
+  "goalY": -3.45,
+  "gravity": 9.81,
+  "friction": 0.25,
+  "bounciness": 0.0,
+  "parStrokes": 3,
+  "movingObstacle": true,
+  "reverseGravity": true
+}

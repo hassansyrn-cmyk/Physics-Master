@@ -1,0 +1,20 @@
+{
+  "id": 17,
+  "chapter": 2,
+  "titleEn": "Experiment 17",
+  "titleAr": "التجربة 17",
+  "objective": "DropBox",
+  "hazard": "Fan",
+  "timeLimit": 40.0,
+  "inkLimit": 15.0,
+  "ballX": -5.0,
+  "ballY": 1.9,
+  "goalX": 4.1,
+  "goalY": -3.1,
+  "gravity": 9.81,
+  "friction": 0.35,
+  "bounciness": 0.1,
+  "parStrokes": 4,
+  "movingObstacle": true,
+  "reverseGravity": false
+}
