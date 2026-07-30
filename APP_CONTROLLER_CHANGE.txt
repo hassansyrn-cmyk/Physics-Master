@@ -1,0 +1,4 @@
+IMPORTANT: In your existing Assets/Scripts/Core/AppController.cs replace exactly:
+Screen.sleepTimeout=SleepTimeout.Never;
+with:
+Screen.sleepTimeout=SleepTimeout.NeverSleep;

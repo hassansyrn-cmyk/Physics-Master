@@ -1,9 +1,55 @@
 using UnityEngine;
-namespace PhysicsMaster.Gameplay {
-    public static class Effects {
-        public static void Burst(Vector2 at, Color color, int count=18) {
-            var root=new GameObject("Burst"); root.transform.position=at;
-            for(int i=0;i<count;i++){var g=GameObject.CreatePrimitive(PrimitiveType.Quad);g.name="Particle";g.transform.SetParent(root.transform);g.transform.localScale=Vector3.one*.08f;var r=g.GetComponent<Renderer>();r.material=new Material(Shader.Find("Sprites/Default"));r.material.color=color;Object.Destroy(g.GetComponent<Collider>());var b=g.AddComponent<Rigidbody2D>();float a=i*Mathf.PI*2/count;b.linearVelocity=new Vector2(Mathf.Cos(a),Mathf.Sin(a))*Random.Range(1.5f,4f);b.gravityScale=.5f;Object.Destroy(g,1.2f);} Object.Destroy(root,1.3f);
+
+namespace PhysicsMaster.Gameplay
+{
+    public static class Effects
+    {
+        private static Sprite particleSprite;
+
+        private static Sprite ParticleSprite
+        {
+            get
+            {
+                if (particleSprite != null)
+                {
+                    return particleSprite;
+                }
+
+                Texture2D texture = Texture2D.whiteTexture;
+                particleSprite = Sprite.Create(
+                    texture,
+                    new Rect(0, 0, texture.width, texture.height),
+                    new Vector2(0.5f, 0.5f),
+                    1f);
+                return particleSprite;
+            }
+        }
+
+        public static void Burst(Vector2 position, Color color, int count = 18)
+        {
+            GameObject root = new GameObject("Burst");
+            root.transform.position = position;
+
+            for (int i = 0; i < count; i++)
+            {
+                GameObject particle = new GameObject("Particle");
+                particle.transform.SetParent(root.transform, false);
+                particle.transform.localScale = Vector3.one * 0.08f;
+
+                SpriteRenderer renderer = particle.AddComponent<SpriteRenderer>();
+                renderer.sprite = ParticleSprite;
+                renderer.color = color;
+
+                Rigidbody2D body = particle.AddComponent<Rigidbody2D>();
+                float angle = i * Mathf.PI * 2f / count;
+                body.linearVelocity = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle))
+                    * Random.Range(1.5f, 4f);
+                body.gravityScale = 0.5f;
+
+                Object.Destroy(particle, 1.2f);
+            }
+
+            Object.Destroy(root, 1.3f);
         }
     }
 }
