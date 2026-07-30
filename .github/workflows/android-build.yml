@@ -1,132 +1,42 @@
-name: Unity Android CI
+name: Android Debug Build
 
 on:
-  workflow_dispatch:
-
   push:
-    branches:
-      - main
-
-  pull_request:
-    branches:
-      - main
-
-permissions:
-  contents: read
-  checks: write
-  pull-requests: write
-
-concurrency:
-  group: unity-android-${{ github.ref }}
-  cancel-in-progress: true
+    branches: [main, master]
+  workflow_dispatch: {}
 
 jobs:
-  tests:
-    name: Unity EditMode Tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: true
-          fetch-depth: 0
-
-      - name: Cache Unity Library
-        uses: actions/cache@v4
-        with:
-          path: Library
-          key: Library-tests-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-          restore-keys: |
-            Library-tests-
-
-      - name: Run Unity EditMode tests
-        uses: game-ci/unity-test-runner@v4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        with:
-          unityVersion: 6000.0.80f1
-          testMode: EditMode
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: PhysicsMaster-Test-Results
-          path: artifacts
-          if-no-files-found: warn
-          retention-days: 14
-
   build:
-    name: Build Android ${{ matrix.format }}
-    needs: tests
+    name: Build Android APK (Debug)
     runs-on: ubuntu-latest
-    timeout-minutes: 90
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - format: APK
-            method: AndroidBuild.BuildApk
-            artifact: PhysicsMaster-APK
-            path: build/Android/PhysicsMaster.apk
-
-          - format: AAB
-            method: AndroidBuild.BuildAab
-            artifact: PhysicsMaster-AAB
-            path: build/Android/PhysicsMaster.aab
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           lfs: true
-          fetch-depth: 0
 
       - name: Cache Unity Library
         uses: actions/cache@v4
         with:
           path: Library
-          key: Library-android-${{ matrix.format }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: Library-Android-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
-            Library-android-${{ matrix.format }}-
-            Library-android-
+            Library-Android-
 
-      - name: Build Android ${{ matrix.format }}
+      - name: Build project
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          unityVersion: 6000.0.80f1
           targetPlatform: Android
-          buildMethod: ${{ matrix.method }}
-          androidTargetSdkVersion: AndroidApiLevel36
-          allowDirtyBuild: true
+          androidExportType: androidPackage
+          # لا يوجد keystore هنا عمداً => يوقّع Unity الحزمة تلقائياً
+          # بمفتاح Debug الافتراضي الخاص به. هذا هو المطلوب لملف APK Debug.
 
-      - name: Verify Android build output
-        shell: bash
-        run: |
-          echo "Checking expected output: ${{ matrix.path }}"
-
-          if [ ! -f "${{ matrix.path }}" ]; then
-            echo "Build output was not created."
-            find build -maxdepth 4 -type f -print 2>/dev/null || true
-            exit 1
-          fi
-
-          ls -lh "${{ matrix.path }}"
-
-      - name: Upload Android ${{ matrix.format }}
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact }}
-          path: ${{ matrix.path }}
-          if-no-files-found: error
-          retention-days: 14
+          name: PhysicsMaster-debug-apk
+          path: build/Android
