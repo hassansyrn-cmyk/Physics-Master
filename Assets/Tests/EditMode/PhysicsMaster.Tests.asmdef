@@ -5,7 +5,7 @@
   ],
   "references": [
     "PhysicsMaster.Runtime",
-    "Unity.UGUI"
+    "UnityEngine.UI"
   ],
   "includePlatforms": [
     "Editor"
