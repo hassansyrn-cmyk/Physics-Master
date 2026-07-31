@@ -1,4 +1,7 @@
 {
   "name": "PhysicsMaster.Runtime",
-  "rootNamespace": "PhysicsMaster"
+  "rootNamespace": "PhysicsMaster",
+  "references": [
+    "Unity.UGUI"
+  ]
 }

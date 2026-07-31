@@ -4,7 +4,8 @@
     "TestAssemblies"
   ],
   "references": [
-    "PhysicsMaster.Runtime"
+    "PhysicsMaster.Runtime",
+    "Unity.UGUI"
   ],
   "includePlatforms": [
     "Editor"
